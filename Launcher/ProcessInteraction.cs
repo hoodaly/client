@@ -48,7 +48,7 @@ namespace Launcher
         [DllImport("kernel32.dll")]
         private static extern IntPtr OpenThread(int dwDesiredAccess, bool bInheritHandle, int dwThreadId);
 
-        #endregion pinvoke declarations
+                #endregion pinvoke declarations
 
         /// <summary>
         /// runs an executable, injects the dll and then executes the specified function.
@@ -57,17 +57,62 @@ namespace Launcher
         /// </summary>
         public static bool Run(string executable, string arguments, string dll, string function)
         {
+                var process = Process.Start(executable, arguments);
+                if (!Inject(process, dll)) return false;
+
+                //Thread.Sleep(500);
+                SuspendProcess(process);
+
+                var success = CallExport(process, dll, function);
+
+                ResumeProcess(process);
+
+                return success;
+        }
+        public static bool RunFastInjection(string executable, string arguments, string dll, string function)
+        {
+                uint pid;
+                var handle = LaunchProcessSuspended(executable, arguments, 0, out pid);
+                var process = Process.GetProcessById((int)pid);
+                        if (!Inject(process, "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\SOS.dll")) return false;
+                        if (!Inject(process, dll)) return false;
+
+                        //Thread.Sleep(500);
+                        //SuspendProcess(process);
+
+                        var success = CallExport(process, dll, function);
+
+                ResumeProcess(process);
+
+                return success;
+        }
+
+
+
+        public static bool LaunchProcessSuspended(string processpath, string arguments, int initialResumeTime, out uint PID)
+        {
+                IntPtr ThreadHandle = IntPtr.Zero;
+                STARTUPINFO si = new STARTUPINFO();
+                PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
+                bool success = NativeMethods.CreateProcess(processpath, null, IntPtr.Zero, IntPtr.Zero, false, ProcessCreationFlags.CREATE_SUSPENDED, IntPtr.Zero, null, ref si, out pi);
+                ThreadHandle = pi.hThread;
+                PID = pi.dwProcessId;
+
+                if (initialResumeTime > 0)
+                {
+                        NativeMethods.ResumeThread(ThreadHandle);
+                        System.Threading.Thread.Sleep(initialResumeTime);
+                        NativeMethods.SuspendThread(ThreadHandle);
+                }
+
+                return success;
+        }
+
+        public static bool StartInject(string executable, string arguments, string dll)
+        {
             var process = Process.Start(executable, arguments);
             if (!Inject(process, dll)) return false;
-
-            Thread.Sleep(500);
-            SuspendProcess(process);
-
-            var success = CallExport(process, dll, function);
-
-            ResumeProcess(process);
-
-            return success;
+            return true;
         }
 
         /// <summary>
