@@ -32,25 +32,25 @@ namespace Entice.Channels
             {
                 case "message":
                     {
-                        Chat.ShowMessage(message.Payload.text.ToString(), message.Payload.sender.ToString(), "", Chat.GetColorForChannel(Chat.Channel.All));
+                        Chat.ShowMessage(message.Payload["text"].ToString(), message.Payload["sender"].ToString(), "", Chat.GetColorForChannel(Chat.Channel.All));
                     }
                     break;
 
                 case "emote":
                     {
-                        Creature sender = Game.Zone.Agents.FirstOrDefault(a => a.Name.Equals(message.Payload.sender.ToString()));
+                        Creature sender = Game.Zone.Agents.FirstOrDefault(a => a.Name.Equals(message.Payload["sender"].ToString()));
 
                         if (sender != null)
                         {
                             CreatureAnimation animation;
-                            if (Enum.TryParse(message.Payload.action.ToString(), true, out animation))
+                            if (Enum.TryParse(message.Payload["action"].ToString(), true, out animation))
                             {
                                 sender.PerformAnimation(animation);
                             }
                             else
                             {
                                 List<string> args;
-                                string command = Chat.ParseCommand(message.Payload.action.ToString(), out args);
+                                string command = Chat.ParseCommand(message.Payload["action"].ToString(), out args);
                                 switch (command)
                                 {
                                     case "fame":

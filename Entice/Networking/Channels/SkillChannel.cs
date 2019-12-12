@@ -78,10 +78,10 @@ namespace Entice.Channels
 
                 case "cast:start":
                     {
-                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload.entity.ToString())).Character;
+                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload["entity"].ToString())).Character;
 
                         uint castTime = uint.Parse(message.Payload.cast_time.ToString());
-                        var skill = (Skill)uint.Parse(message.Payload.skill.ToString());
+                        var skill = (Skill)uint.Parse(message.Payload["skill"].ToString());
 
                         character.CastSkill(skill, castTime * 0.001F, character);
                     }
@@ -89,10 +89,10 @@ namespace Entice.Channels
 
                 case "cast:end":
                     {
-                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload.entity.ToString())).Character;
+                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload["entity"].ToString())).Character;
 
                         uint rechargeTime = uint.Parse(message.Payload.recharge_time.ToString());
-                        uint slot = uint.Parse(message.Payload.slot.ToString());
+                        uint slot = uint.Parse(message.Payload["slot"].ToString());
 
                         if (Game.Player.Character == character)
                         {
@@ -103,18 +103,18 @@ namespace Entice.Channels
 
                 case "recharge:end":
                     {
-                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload.entity.ToString())).Character;
-                        character.SkillBar.RechargeEnd(uint.Parse(message.Payload.slot.ToString()));
+                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload["entity"].ToString())).Character;
+                        character.SkillBar.RechargeEnd(uint.Parse(message.Payload["slot"].ToString()));
                     }
                     break;
 
                 case "cast:instantly":
                     {
-                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload.entity.ToString())).Character;
+                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload["entity"].ToString())).Character;
 
                         uint rechargeTime = uint.Parse(message.Payload.recharge_time.ToString());
-                        var skill = (Skill)uint.Parse(message.Payload.skill.ToString());
-                        uint slot = uint.Parse(message.Payload.slot.ToString());
+                        var skill = (Skill)uint.Parse(message.Payload["skill"].ToString());
+                        uint slot = uint.Parse(message.Payload["slot"].ToString());
 
                         character.CastInstant(skill, character);
 
@@ -127,7 +127,7 @@ namespace Entice.Channels
 
                 case "cast:error":
                     {
-                        Game.Player.Character.SkillBar.RechargedVisual(uint.Parse(message.Payload.slot.ToString()));
+                        Game.Player.Character.SkillBar.RechargedVisual(uint.Parse(message.Payload["slot"].ToString()));
                     }
                     break;
             }

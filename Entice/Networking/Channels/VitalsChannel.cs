@@ -19,7 +19,7 @@ namespace Entice.Channels
                 case "entity:resurrected":
                     {
                         Guid entityId;
-                        bool parseResult = Guid.TryParse(message.Payload.entity.ToString(), out entityId);
+                        bool parseResult = Guid.TryParse(message.Payload["entity"].ToString(), out entityId);
                         if (!parseResult) return;
                         Creature creature = Entity.GetCreature(entityId);
                         creature.Status = CreatureStatus.Spawn;
@@ -29,7 +29,7 @@ namespace Entice.Channels
                 case "entity:dead":
                     {
                         Guid entityId;
-                        bool parseResult = Guid.TryParse(message.Payload.entity.ToString(), out entityId);
+                        bool parseResult = Guid.TryParse(message.Payload["entity"].ToString(), out entityId);
                         if (!parseResult) return;
                         Creature creature = Entity.GetCreature(entityId);
                         creature.Status = CreatureStatus.Dead;

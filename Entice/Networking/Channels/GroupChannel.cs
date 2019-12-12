@@ -37,7 +37,7 @@ namespace Entice.Channels
                         try
                         {
                             bool newParty = false;
-                            groupLeader = Entity.GetEntity<Player>(Guid.Parse(message.Payload.leader.ToString())).Character;
+                            groupLeader = Entity.GetEntity<Player>(Guid.Parse(message.Payload["leader"].ToString())).Character;
                             party = Game.Zone.Parties.FirstOrDefault(x => x.Leader == groupLeader);
                             if (party == null)
                             {
