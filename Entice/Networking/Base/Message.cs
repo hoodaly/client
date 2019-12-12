@@ -20,7 +20,7 @@ namespace Entice.Base
             Topic = m.GetValue("topic").ToString();
             Event = m.GetValue("event").ToString();
             Ref = m.GetValue("ref").ToString();
-            Payload = JObject.Parse(m.GetValue("payload").ToString());
+            Payload = JObject.Parse(m.GetValue("payload").ToString()) as dynamic;
         }
 
         public string Topic { get; private set; }
