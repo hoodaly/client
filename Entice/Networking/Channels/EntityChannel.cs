@@ -2,8 +2,10 @@
 using Entice.Definitions;
 using Entice.Entities;
 using GuildWarsInterface;
+using GuildWarsInterface.Declarations;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Entice.Channels
@@ -28,15 +30,27 @@ namespace Entice.Channels
             {
                 case "phx_reply":
                     {
-                        if (!message.Payload.status.ToString().Equals("ok")) return;
+                        if (!message.Payload["status"].ToString().Equals("ok")) return;
 
                         switch (message.Ref)
                         {
                             case MAP_CHANGE_REF:
                                 {
-                                    var area = (Area)Enum.Parse(typeof(Area), message.Payload.response.map.ToString());
+                                    var area = (Area)Enum.Parse(typeof(Area), message.Payload["response"].map.ToString());
+                                    var map = DefinitionConverter.ToMap(area);
+
+                                    // Already say that no spawning can happen
+                                    if (Game.State == GameState.Playing) Game.StartMapChange();
 
                                     Networking.ChangeArea(area, Game.Player.Character.Name);
+
+                                    /*Game.ChangeMap(map, zone =>
+                                    {
+                                        zone.IsExplorable = !IsOutpost;
+
+                                        Entity.Players.ForEach(p => zone.AddAgent(p.Character));
+                                    });*/
+                                    Game.Player.Character.Transformation.Position = MapData.GetDefaultSpawnPoint(map);
                                 }
                                 break;
                         }
@@ -44,26 +58,28 @@ namespace Entice.Channels
                     break;
                 case "initial":
                     {
-                        Guid myId = Entity.Entities.Values.OfType<Player>().First(p => p.Character == Game.Player.Character).Id;
+                        //Guid myId = Entity.Entities.Values.OfType<Player>().First(p => p.Character == Game.Player.Character).Id;
+                        /*if (Game.State == GameState.CharacterScreen)
+                        {*/
+                            Game.ChangeMap(DefinitionConverter.ToMap(Area), zone =>
+                                    {
+                                        zone.IsExplorable = !IsOutpost;
 
-                        foreach (JProperty a in message.Payload.attributes.Values<JProperty>())
+                                        Entity.Players.ForEach(p => zone.AddAgent(p.Character));
+                                    });
+                        //}
+                        
+                        foreach (JProperty a in message.Payload["attributes"].Values<JProperty>())
                         {
-                            Entity.UpdateEntity(myId, a.Name, a.Value);
+                            Entity.UpdateEntity(PlayerEntityId, a.Name, a.Value);
                         }
-
-                        Game.ChangeMap(DefinitionConverter.ToMap(Area), zone =>
-                                {
-                                    zone.IsExplorable = !IsOutpost;
-
-                                    Entity.Players.ForEach(p => zone.AddAgent(p.Character));
-                                });
                     }
                     break;
                 case "add":
                     {
-                        Guid id = Guid.Parse(message.Payload.entity.ToString());
+                        Guid id = Guid.Parse(message.Payload["entity"].ToString());
 
-                        foreach (JProperty a in message.Payload.attributes.Values<JProperty>())
+                        foreach (JProperty a in message.Payload["attributes"].Values<JProperty>())
                         {
                             Entity.UpdateEntity(id, a.Name, a.Value);
                         }
@@ -71,14 +87,14 @@ namespace Entice.Channels
                     break;
                 case "change":
                     {
-                        Guid id = Guid.Parse(message.Payload.entity.ToString());
+                        Guid id = Guid.Parse(message.Payload["entity"].ToString());
 
-                        foreach (JProperty a in message.Payload.added.Values<JProperty>())
+                        foreach (JProperty a in message.Payload["added"].Values<JProperty>())
                         {
                             Entity.UpdateEntity(id, a.Name, a.Value);
                         }
 
-                        foreach (JProperty a in message.Payload.changed.Values<JProperty>())
+                        foreach (JProperty a in message.Payload["changed"].Values<JProperty>())
                         {
                             Entity.UpdateEntity(id, a.Name, a.Value);
                         }
@@ -86,7 +102,7 @@ namespace Entice.Channels
                     break;
                 case "remove":
                     {
-                        Entity.RemoveEntity(Guid.Parse(message.Payload.entity.ToString()));
+                        Entity.RemoveEntity(Guid.Parse(message.Payload["entity"].ToString()));
                     }
                     break;
             }
