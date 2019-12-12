@@ -1,4 +1,4 @@
-﻿using Entice.Base;
+using Entice.Base;
 using Entice.Channels;
 using Entice.Components;
 using Entice.Debugging;
@@ -86,11 +86,12 @@ namespace Entice
                     {
                         c.Area = accessCredentials.Area;
                         c.IsOutpost = accessCredentials.IsOutpost;
+                        c.PlayerEntityId = accessCredentials.EntityId;
                     });
-
             Game.Player.Character = Entity.Reset(accessCredentials.EntityId).Character;
 
             Channels.All.ForEach(c => c.Join());
+
 
             if (!UpdateFriends())
             {

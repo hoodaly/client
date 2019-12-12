@@ -1,4 +1,4 @@
-﻿using Entice.Base;
+using Entice.Base;
 using Entice.Definitions;
 using System;
 
@@ -15,6 +15,7 @@ namespace Entice.Channels
 
         public Area Area { get; set; }
         public bool IsOutpost { get; set; }
+        public Guid PlayerEntityId { get; set; }
 
         public void Join()
         {
