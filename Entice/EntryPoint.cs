@@ -22,8 +22,8 @@ namespace Entice
                     {
                         while (true)
                         {
-                            if (Game.State == GameState.Playing) Game.TimePassed(100);
-                            Thread.Sleep(100);
+                            if (Game.State == GameState.Playing) Game.TimePassed(1000);
+                            Thread.Sleep(1000);
                         }
                     }).Start();
 
