@@ -94,7 +94,7 @@ namespace Launcher
                 IntPtr ThreadHandle = IntPtr.Zero;
                 STARTUPINFO si = new STARTUPINFO();
                 PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
-                bool success = NativeMethods.CreateProcess(processpath, null, IntPtr.Zero, IntPtr.Zero, false, ProcessCreationFlags.CREATE_SUSPENDED, IntPtr.Zero, null, ref si, out pi);
+                bool success = NativeMethods.CreateProcess(processpath, arguments, IntPtr.Zero, IntPtr.Zero, false, ProcessCreationFlags.CREATE_SUSPENDED, IntPtr.Zero, null, ref si, out pi);
                 ThreadHandle = pi.hThread;
                 PID = pi.dwProcessId;
 
