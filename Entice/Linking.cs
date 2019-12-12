@@ -1,6 +1,7 @@
-﻿using Entice.Components;
+using Entice.Components;
 using Entice.Definitions;
 using GuildWarsInterface;
+using GuildWarsInterface.Datastructures;
 using GuildWarsInterface.Datastructures.Agents;
 using GuildWarsInterface.Datastructures.Components;
 using GuildWarsInterface.Declarations;
@@ -37,6 +38,11 @@ namespace Entice
 
                         Networking.UpdateFriends();
                         return true;
+                    };
+            AuthLogic.DeleteCharacter = (character) =>
+                    {
+                            Networking.RestApi.RemoveCharacter(character.Name);
+                            return true;
                     };
 
             GameLogic.ChatMessage = ChatMessage;

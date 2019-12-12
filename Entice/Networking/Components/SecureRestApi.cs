@@ -67,6 +67,13 @@ namespace Entice.Components
                                 }, _cookie);
         }
 
+        public bool RemoveCharacter(string name)
+        {
+            const string ROUTE = "/api/char";
+
+            return Http.Delete(ROUTE, new[] { new KeyValuePair<string, string>("char_name", name) }, _cookie);
+        }
+
         public void Logout()
         {
             const string ROUTE = "/api/logout";
