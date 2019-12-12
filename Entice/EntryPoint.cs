@@ -1,4 +1,4 @@
-﻿using Entice.Debugging;
+using Entice.Debugging;
 using GuildWarsInterface;
 using GuildWarsInterface.Declarations;
 using RGiesecke.DllExport;
@@ -28,7 +28,7 @@ namespace Entice
                     }).Start();
 
             //ToDo: Fix Method in Movement.cs L67-96
-            //new Thread(Movement.Task).Start();
+            new Thread(Movement.Task).Start();
         }
     }
 }
