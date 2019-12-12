@@ -163,3 +163,5 @@ $RECYCLE.BIN/
 */packages/*
 !**/packages/build/
 *.orig
+
+.vs
