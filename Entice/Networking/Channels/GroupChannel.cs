@@ -1,4 +1,4 @@
-﻿using Entice.Base;
+using Entice.Base;
 using Entice.Entities;
 using GuildWarsInterface;
 using GuildWarsInterface.Datastructures;
@@ -111,12 +111,19 @@ namespace Entice.Channels
         {
             if (invites == null) return;
             string[] items = invites.Select(jv => (string)jv).ToArray();
-            foreach (string entityId in items)
+            var characters = items.Select(id => Entity.GetEntity<Player>(Guid.Parse(id)).Character);
+            foreach (var invited_character in characters)
             {
-                PlayerCharacter invite = Entity.GetEntity<Player>(Guid.Parse(entityId)).Character;
                 Party partyOfInvitedMember =
-                    Game.Zone.Parties.FirstOrDefault(x => x.Members.Contains(invite) || x.Leader == invite);
+                    Game.Zone.Parties.FirstOrDefault(x => x.Members.Contains(invited_character) || x.Leader == invited_character);
                 party.AddInvite(partyOfInvitedMember);
+            }
+            foreach (Party p in party.Invites)
+            {
+                if (p.Members.Intersect(characters).Count() == 0 && !characters.Contains(p.Leader))
+                {
+                    party.RemoveInvite(p);
+                }
             }
         }
 
