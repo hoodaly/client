@@ -1,6 +1,7 @@
 using Entice.Debugging;
 using GuildWarsInterface;
 using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Modification.Hooks;
 using RGiesecke.DllExport;
 using System;
 using System.Threading;
@@ -15,6 +16,7 @@ namespace Entice
             AppDomain.CurrentDomain.UnhandledException += (sender, args) => Debug.Error(args.ExceptionObject.ToString());
             GuildWarsInterface.Debugging.Debug.ThrowException += exception => Debug.Error(exception.ToString());
 
+            HookHelper.Initialize();
             Game.Initialize();
             Linking.Initialize();
 
