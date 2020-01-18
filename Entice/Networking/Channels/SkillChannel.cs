@@ -1,4 +1,4 @@
-﻿using Entice.Base;
+using Entice.Base;
 using Entice.Entities;
 using GuildWarsInterface;
 using GuildWarsInterface.Datastructures.Agents;
@@ -69,6 +69,12 @@ namespace Entice.Channels
 
                 case "skillbar:ok":
                     {
+                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload["entity"].ToString())).Character;
+                        if (Game.Player.Character != character)
+                        {
+                            break;
+                        }
+
                         for (int i = 0; i < 8; i++)
                         {
                             Game.Player.Character.SkillBar.SetSkill((uint)i, (Skill)message.Payload.skillbar[i]);
