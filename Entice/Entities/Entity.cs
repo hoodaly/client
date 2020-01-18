@@ -76,7 +76,7 @@ namespace Entice.Entities
         public static Creature GetCreature(Guid entityId)
         {
             Type typeOfEntity = Entity.Entities[entityId].GetType();
-            if (typeOfEntity == typeof(PlayerCharacter))
+            if (typeOfEntity == typeof(Player))
             {
                 return Entity.GetEntity<Player>(entityId).Character;
             }
