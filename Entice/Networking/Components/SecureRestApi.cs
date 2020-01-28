@@ -149,7 +149,7 @@ namespace Entice.Components
             return characters != null;
         }
 
-        public bool GetFriends(out IEnumerable<KeyValuePair<KeyValuePair<string, string>, bool>> friends)
+        public bool GetFriends(out IEnumerable<KeyValuePair<Guid, string[]>> friends)
         {
             const string ROUTE = "/api/friend";
 
@@ -159,11 +159,14 @@ namespace Entice.Components
                 JToken friendInfo = response.GetValue("friends");
 
                 friends = friendInfo.Select(
-                        c => new KeyValuePair<KeyValuePair<string, string>, bool>(
-                                     new KeyValuePair<string, string>(
-                                     c.Value<string>("base_name"),
-                                     c.Value<string>("current_name")),
-                                     c.Value<string>("status").Equals("online")));
+                        c => new KeyValuePair<Guid, string[]>(
+                            Guid.Parse(c.Value<string>("id")),
+                            new string[] {
+                                        c.Value<string>("base_name"),
+                                        c.Value<string>("current_name"),
+                                        c.Value<string>("status")
+                                        })
+                        );
             }
             else
             {
@@ -206,11 +209,11 @@ namespace Entice.Components
             return AddFriendResult.Error;
         }
 
-        public bool RemoveFriend(string name)
+        public bool RemoveFriend(Guid friendAccountGuid)
         {
             const string ROUTE = "/api/friend";
 
-            return Http.Delete(ROUTE, new[] { new KeyValuePair<string, string>("char_name", name) }, _cookie);
+            return Http.Delete(ROUTE, new[] { new KeyValuePair<string, string>("char_id", friendAccountGuid.ToString()) }, _cookie);
         }
 
         public class AccessCredentials

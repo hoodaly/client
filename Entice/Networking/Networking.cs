@@ -106,13 +106,13 @@ namespace Entice
             Game.Player.FriendList.Clear();
             if (RestApi == null) return true;
 
-            IEnumerable<KeyValuePair<KeyValuePair<string, string>, bool>> friends;
+            IEnumerable<KeyValuePair<Guid, string[]>> friends;
             if (!RestApi.GetFriends(out friends)) return false;
 
             var friendList = friends.ToList();
             foreach (var f in friendList)
             {
-                Game.Player.FriendList.Add(FriendList.Type.Friend, f.Key.Key, f.Key.Value, f.Value ? PlayerStatus.Online : PlayerStatus.Offline);
+                Game.Player.FriendList.Add(FriendList.Type.Friend, f.Key, f.Value[0], f.Value[1], f.Value[2].Equals("online") ? PlayerStatus.Online : PlayerStatus.Offline);
             }
 
             return true;
