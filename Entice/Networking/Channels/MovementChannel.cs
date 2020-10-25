@@ -43,16 +43,19 @@ namespace Entice.Channels
             {
                 case "update":
                     {
-                        PlayerCharacter character = Entity.GetEntity<Player>(Guid.Parse(message.Payload["entity"].ToString())).Character;
+                        Creature character = Entity.GetCreature(Guid.Parse(message.Payload["entity"].ToString()));
                         if (character == Game.Player.Character) return;
 
-                        float x = float.Parse(message.Payload["goal"].x.ToString());
-                        float y = float.Parse(message.Payload["goal"].y.ToString());
+                        float x = float.Parse(message.Payload["position"].x.ToString());
+                        float y = float.Parse(message.Payload["position"].y.ToString());
+                        float target_x = float.Parse(message.Payload["goal"].x.ToString());
+                        float target_y = float.Parse(message.Payload["goal"].y.ToString());
                         short plane = short.Parse(message.Payload["position"].plane.ToString());
 
-                        character.Transformation.SetGoal(x, y, plane);
+                        character.Transformation.Position = new Position(x, y, plane);
+                        character.Transformation.SetGoal(target_x, target_y, plane);
                         character.Transformation.SpeedModifier = float.Parse(message.Payload["velocity"].ToString());
-                        character.Transformation.MovementType = (MovementType)byte.Parse(message.Payload.move_type.ToString());
+                        character.Transformation.MovementType = (MovementType)byte.Parse(message.Payload["move_type"].ToString());
                     }
                     break;
             }
