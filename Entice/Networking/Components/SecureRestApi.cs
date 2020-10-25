@@ -1,4 +1,4 @@
-﻿using Entice.Base;
+using Entice.Base;
 using Entice.Definitions;
 using GuildWarsInterface.Datastructures.Agents;
 using GuildWarsInterface.Datastructures.Agents.Components;
@@ -101,6 +101,7 @@ namespace Entice.Components
                     {
                         Area = (Area)Enum.Parse(typeof(Area), response.GetValue("map").ToString()),
                         ClientId = response.GetValue("client_id").ToString(),
+                        MapInstance = response.GetValue("map_instance").ToString(),
                         EntityId = Guid.Parse(response.GetValue("entity_id").ToString()),
                         EntityToken = response.GetValue("entity_token").ToString(),
                         IsOutpost = response.GetValue("is_outpost").Value<bool>()
@@ -120,6 +121,7 @@ namespace Entice.Components
             return GetToken(ROUTE, new[]
                     {
                                         new KeyValuePair<string, string>("map", area.ToString()),
+                                        new KeyValuePair<string, string>("instance", "0"),
                                         new KeyValuePair<string, string>("char_name", character)
                                 },
                             out accessCredentials);
@@ -218,6 +220,7 @@ namespace Entice.Components
 
         public class AccessCredentials
         {
+            public string MapInstance { get; set; }
             public string ClientId { get; set; }
             public string EntityToken { get; set; }
             public Guid EntityId { get; set; }

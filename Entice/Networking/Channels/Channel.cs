@@ -14,6 +14,8 @@ namespace Entice.Channels
         public string Topic { get; set; }
 
         public Area Area { get; set; }
+
+        public string MapInstance { get; set; }
         public bool IsOutpost { get; set; }
         public Guid PlayerEntityId { get; set; }
 
@@ -29,12 +31,12 @@ namespace Entice.Channels
 
         protected void Send(string @event, Action<dynamic> payload, string @ref = "")
         {
-            Networking.Websocket.Send(new Message(Topic + ":" + Area, @event, @ref, payload));
+            Networking.Websocket.Send(new Message(Topic + ":" + MapInstance, @event, @ref, payload));
         }
 
         protected void Send(string topic, string @event, Action<dynamic> payload, string @ref = "")
         {
-            Networking.Websocket.Send(new Message(Topic + ":" + Area + topic, @event, @ref, payload));
+            Networking.Websocket.Send(new Message(Topic + ":" + MapInstance + topic, @event, @ref, payload));
         }
 
         public abstract void HandleMessage(Message message);

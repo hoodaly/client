@@ -59,7 +59,7 @@ namespace Entice
                                 {
                                         new KeyValuePair<string, string>("client_id", accessCredentials.ClientId),
                                         new KeyValuePair<string, string>("entity_token", accessCredentials.EntityToken),
-                                        new KeyValuePair<string, string>("map", accessCredentials.Area.ToString()),
+                                        new KeyValuePair<string, string>("map_instance", accessCredentials.MapInstance),
                                         new KeyValuePair<string, string>("vsn", "1.0.0")
                                 };
 
@@ -85,6 +85,7 @@ namespace Entice
             Channels.All.ForEach(c =>
                     {
                         c.Area = accessCredentials.Area;
+                        c.MapInstance = accessCredentials.MapInstance;
                         c.IsOutpost = accessCredentials.IsOutpost;
                         c.PlayerEntityId = accessCredentials.EntityId;
                     });
