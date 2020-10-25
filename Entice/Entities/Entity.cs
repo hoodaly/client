@@ -1,4 +1,4 @@
-﻿using Entice.Debugging;
+using Entice.Debugging;
 using GuildWarsInterface.Datastructures.Agents;
 using System;
 using System.Collections.Generic;
@@ -45,30 +45,50 @@ namespace Entice.Entities
                 case "npc":
                     return GetEntity<Npc>(entity.Id);
 
+                case "item":
+                    return GetEntity<ItemEntity>(entity.Id);
+
                 default:
                     return entity;
             }
         }
 
         /// <summary>
-        /// Gets an Entity id by an Creature (by. Name)
+        /// Gets an Entity id by an Agent (by. Name)
         /// </summary>
-        /// <param name="creature"></param>
+        /// <param name="agent"></param>
         /// <returns>If found the Id of the Entity. Otherwise <see cref="Guid.Empty"/></returns>
-        public static Guid GetIdOfCreature(Creature creature)
+        public static Guid GetIdOfAgent(Agent agent)
         {
-            Dictionary<Guid, Player> players =
-                Entities.Where(x => (x.Value as Player) != null).Select(y => y.Value as Player).ToDictionary(p => p.Id);
-
-            Dictionary<Guid, Npc> npcs =
-                Entities.Where(x => (x.Value as Npc) != null).Select(y => y.Value as Npc).ToDictionary(p => p.Id);
             Guid entityId;
+            entityId = GetIdOfEntityWith<Player>(player => player.Character.Name == agent.Name);
+            if (entityId != Guid.Empty)
+            {
+                return entityId;
+            }
+            entityId = GetIdOfEntityWith<Npc>(npc => npc.Character.Name == agent.Name);
+            if (entityId != Guid.Empty)
+            {
+                return entityId;
+            }
+            entityId = GetIdOfEntityWith<ItemEntity>(item => item.DroppedItem == agent);
+            if (entityId != Guid.Empty)
+            {
+                return entityId;
+            }
 
-            entityId = npcs.FirstOrDefault(x => x.Value.Character.Name == creature.Name).Key;
-            if (entityId != default(Guid)) return entityId;
+            return Guid.Empty;
+        }
 
-            entityId = players.FirstOrDefault(x => x.Value.Character.Name == creature.Name).Key;
-            if (entityId != default(Guid)) return entityId;
+        public static Guid GetIdOfEntityWith<T>(Func<T, bool> entitySelector) where T : Entity
+        {
+            Dictionary<Guid, T> entities =
+                Entities.Where(x => (x.Value as T) != null).Select(y => y.Value as T).Where(entitySelector).ToDictionary(p => p.Id);
+            
+            Guid entityId;
+            
+            entityId = entities.FirstOrDefault().Key;
+            if (entityId != default) return entityId;
 
             return Guid.Empty;
         }

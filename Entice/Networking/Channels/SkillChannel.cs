@@ -27,7 +27,7 @@ namespace Entice.Channels
         public void Cast(uint slot, Creature target)
         {
             string name = target.Name;
-            Guid entityId = Entity.GetIdOfCreature(target);
+            Guid entityId = Entity.GetIdOfAgent(target);
 
             Send("cast", o =>
             {

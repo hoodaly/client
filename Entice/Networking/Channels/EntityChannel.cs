@@ -2,6 +2,7 @@
 using Entice.Definitions;
 using Entice.Entities;
 using GuildWarsInterface;
+using GuildWarsInterface.Datastructures.Items;
 using GuildWarsInterface.Declarations;
 using Newtonsoft.Json.Linq;
 using System;
@@ -106,6 +107,12 @@ namespace Entice.Channels
                     }
                     break;
             }
+        }
+
+        public void ItemPickup(DroppedItem droppedItem)
+        {
+            Guid itemEntityId = Entity.GetIdOfAgent(droppedItem);
+            Send("items:pickup", o => o.item = itemEntityId);
         }
     }
 }

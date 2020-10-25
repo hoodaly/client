@@ -72,6 +72,7 @@ namespace Entice
                     };
             GameLogic.CastSkill = (slot, target) => Networking.Channels.Skill.Cast(slot, target);
             GameLogic.ValidateNewCharacter = (name, apperance) => Networking.RestApi.CreateCharacter(name, apperance);
+            GameLogic.ItemPickup = (droppedItem) => Networking.Channels.Entity.ItemPickup(droppedItem);
         }
 
         private static void ChatMessage(string message, Chat.Channel channel)

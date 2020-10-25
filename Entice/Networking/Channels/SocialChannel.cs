@@ -38,7 +38,7 @@ namespace Entice.Channels
 
                 case "emote":
                     {
-                        Creature sender = Game.Zone.Agents.FirstOrDefault(a => a.Name.Equals(message.Payload["sender"].ToString()));
+                        Creature sender = (Creature) Game.Zone.Agents.FirstOrDefault(a => a.Name.Equals(message.Payload["sender"].ToString()));
 
                         if (sender != null)
                         {
